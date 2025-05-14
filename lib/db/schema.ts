@@ -7,8 +7,10 @@ import {
   boolean,
   varchar,
   timestamp,
+  PgColumn,
+  PgTableWithColumns,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { Many, relations } from "drizzle-orm";
 import path from "path";
 
 export const files = pgTable("files", {
@@ -32,3 +34,15 @@ export const files = pgTable("files", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
+
+export const filesRelations = relations(files, ({ one,many }) => ({
+  parent: one(files, {
+    fields: [files.parentId],
+    references: [files.id],
+  }),
+
+  children: many(files),
+}));
+
+export const File = typeof files.$inferSelect;
+export const NewFile = typeof files.$inferInsert;
