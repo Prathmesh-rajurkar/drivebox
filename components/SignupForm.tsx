@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { useSignUp } from "@clerk/nextjs";
-import { set, z } from "zod";
+import { z } from "zod";
 import { useState } from "react";
 
 // zod custom schema
@@ -26,15 +26,17 @@ import {
 
 export default function SignUpForm() {
     const router = useRouter();
+    // states
     const [verifying, setVerifying] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [authError, setAuthError] = useState<string | null>(null);
     const [verificationCode, setVerificationCode] = useState("");
-    const { signUp, isLoaded, setActive } = useSignUp();
     const [verificationError, setVerificationError] = useState<string | null>(null);
-
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    
+    // clerk
+    const { signUp, isLoaded, setActive } = useSignUp();
 
     const {
         register,
@@ -48,6 +50,7 @@ export default function SignUpForm() {
             passwordConfirmation: "",
         },
     });
+    
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         if (!isLoaded) return;
         setIsSubmitting(true);
